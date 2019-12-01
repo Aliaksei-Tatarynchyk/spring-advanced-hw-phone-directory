@@ -1,5 +1,9 @@
 package com.epam.phone.directory.controller;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Stream;
+
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -7,7 +11,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import com.epam.phone.directory.Application;
+import com.epam.phone.directory.service.pdf.PhoneDirectoryImporter;
+import com.epam.phone.directory.test.utils.TestUtils;
 
 /*
     https://spring.io/guides/gs/testing-web/
@@ -19,7 +28,9 @@ import org.springframework.test.context.junit4.SpringRunner;
     and all you have to do is @Autowired it.
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(
+        webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+        classes = { PhoneDirectoryImporter.class, Application.class } )
 public class WebPagesAvailabilitySystemTest {
 
     @LocalServerPort
@@ -27,6 +38,9 @@ public class WebPagesAvailabilitySystemTest {
 
     @Autowired
     private TestRestTemplate restTemplate;
+
+    @Autowired
+    private PhoneDirectoryImporter phoneDirectoryImporter;
 
     @Test
     public void shouldServeHomePage() throws Exception {
@@ -40,7 +54,24 @@ public class WebPagesAvailabilitySystemTest {
     @Test
     public void shouldServeUsersPage() throws Exception {
         Assertions.assertThat(restTemplate.getForObject("http://localhost:" + port + "/users", String.class))
-                .as("Users page should be available")
+                .as("Users page should be available if nothing is imported")
                 .contains("data-autotests-id=\"users-page\"");
+    }
+
+    @Test
+    public void shouldDisplayUsersOnUsersPage_afterImportingThemFromJsonFile() throws Exception {
+        phoneDirectoryImporter.importPhoneDirectory(TestUtils.createMockMultipartFile("/testPhoneDirectory.json", MediaType.APPLICATION_JSON));
+
+        Assertions.assertThat(restTemplate.getForObject("http://localhost:" + port + "/users", String.class))
+                .as("Users page should be available and should display 4 users after importing them from '/testPhoneDirectory.json'")
+                .contains("data-autotests-id=\"users-page\"")
+                .matches(actualUsersPage -> {
+                    Matcher userInfoMatcher = Pattern.compile("data-autotests-id=\"user-info\"").matcher(actualUsersPage);
+                    Integer countOfUsersDisplayedOnThePage = Stream.iterate(0, i -> i + 1)
+                            .filter(i -> !userInfoMatcher.find())
+                            .findFirst()
+                            .get();
+                    return countOfUsersDisplayedOnThePage == 4;
+                });
     }
 }

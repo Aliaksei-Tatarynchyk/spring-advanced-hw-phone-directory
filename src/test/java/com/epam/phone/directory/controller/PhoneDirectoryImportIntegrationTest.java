@@ -2,8 +2,6 @@ package com.epam.phone.directory.controller;
 
 import static org.hamcrest.Matchers.is;
 
-import java.io.File;
-import java.nio.file.Files;
 import java.util.Collection;
 
 import org.junit.Assert;
@@ -12,7 +10,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -24,6 +22,7 @@ import com.epam.phone.directory.model.db.User;
 import com.epam.phone.directory.repository.PhoneCompanyRepository;
 import com.epam.phone.directory.repository.PhoneNumberRepository;
 import com.epam.phone.directory.repository.UserRepository;
+import com.epam.phone.directory.test.utils.TestUtils;
 
 /*
     SpringRunner is an alias for the SpringJUnit4ClassRunner. It is a custom extension of JUnit’s BlockJUnit4ClassRunner
@@ -57,11 +56,9 @@ public class PhoneDirectoryImportIntegrationTest {
 
     @Test
     public void shouldImportAllDataFromJSONFileAndRedirectToUsersPage() throws Exception {
-        byte[] jsonPhoneDirectoryBytes = Files.readAllBytes(new File(getClass().getResource("/testPhoneDirectory.json").toURI()).toPath());
-
         mockMvc.perform(MockMvcRequestBuilders
                 .multipart("/import")
-                .file(new MockMultipartFile("file", "testPhoneDirectory.json", "application/json", jsonPhoneDirectoryBytes))
+                .file(TestUtils.createMockMultipartFile("/testPhoneDirectory.json", MediaType.APPLICATION_JSON))
         )
         .andExpect(MockMvcResultMatchers.status().is3xxRedirection())
         .andExpect(MockMvcResultMatchers.redirectedUrl("/users"));

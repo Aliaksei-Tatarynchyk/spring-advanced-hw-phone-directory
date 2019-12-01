@@ -10,7 +10,7 @@
 <h2>Users:</h2>
 <ul>
   <#list users as user>
-    <li>
+    <li data-autotests-id="user-info">
       <b>${user.fullName}</b>:
       <#list user.phoneNumbers as phoneNumber>
           ${phoneNumber.value}<#if phoneNumber.phoneCompany??> (${phoneNumber.phoneCompany.name})</#if>;
