@@ -3,7 +3,7 @@ package com.epam.phone.directory.repository;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
-import com.epam.phone.directory.model.User;
+import com.epam.phone.directory.model.db.User;
 
 /*
  * https://habr.com/ru/post/333756/

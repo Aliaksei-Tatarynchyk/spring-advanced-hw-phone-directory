@@ -1,4 +1,4 @@
-package com.epam.phone.directory;
+package com.epam.phone.directory.controller;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -20,7 +20,7 @@ import org.springframework.test.context.junit4.SpringRunner;
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class WebControllerHttpSystemTest {
+public class WebPagesAvailabilitySystemTest {
 
     @LocalServerPort
     private int port;
@@ -29,14 +29,18 @@ public class WebControllerHttpSystemTest {
     private TestRestTemplate restTemplate;
 
     @Test
-    public void shouldReturnUsersPage() throws Exception {
-        Assertions.assertThat(restTemplate.getForObject("http://localhost:" + port + "/users", String.class))
-                .contains("Users:");
+    public void shouldServeHomePage() throws Exception {
+        Assertions.assertThat(restTemplate.getForObject("http://localhost:" + port, String.class))
+                .as("Home page should be available and should contain the form for uploading the JSON file with phone numbers")
+                .contains("data-autotests-id=\"home-page\"")
+                .contains("action=\"/import\"")
+                .contains("enctype=\"multipart/form-data\"");
     }
 
     @Test
-    public void shouldReturnAddedUserPage() throws Exception {
-        Assertions.assertThat(restTemplate.getForObject("http://localhost:" + port + "/users/add/oleg/schukov", String.class))
-                .contains("User oleg schukov has been added to UserRepository");
+    public void shouldServeUsersPage() throws Exception {
+        Assertions.assertThat(restTemplate.getForObject("http://localhost:" + port + "/users", String.class))
+                .as("Users page should be available")
+                .contains("data-autotests-id=\"users-page\"");
     }
 }

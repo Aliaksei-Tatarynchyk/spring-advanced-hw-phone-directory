@@ -1,0 +1,76 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "firstName": "Oleg",
+      "lastName": "Schukov"
+    },
+    {
+      "id": 2,
+      "firstName": "Anna",
+      "lastName": "Pavlova"
+    },
+    {
+      "id": 3,
+      "firstName": "Zheka",
+      "lastName": "Schuplyj"
+    },
+    {
+      "id": 4,
+      "firstName": "Natalia",
+      "lastName": "Zaskoruzlaja"
+    }
+  ],
+  "phoneCompanies": [
+    {
+      "id": 1,
+      "name": "AT&T"
+    },
+    {
+      "id": 2,
+      "name": "Verizon"
+    },
+    {
+      "id": 3,
+      "name": "T-Mobile"
+    }
+  ],
+  "phoneNumbers": [
+    {
+      "id": 1,
+      "value": "+1-541-754-3011",
+      "userId": 1,
+      "companyId": 1
+    },
+    {
+      "id": 2,
+      "value": "+1-541-754-3012",
+      "userId": 2,
+      "companyId": 1
+    },
+    {
+      "id": 3,
+      "value": "+1-541-754-3013",
+      "userId": 2,
+      "companyId": 2
+    },
+    {
+      "id": 4,
+      "value": "+1-541-754-3014",
+      "userId": 3,
+      "companyId": 100
+    },
+    {
+      "id": 5,
+      "value": "+1-541-754-3015",
+      "userId": 100,
+      "companyId": 3
+    },
+    {
+      "id": 6,
+      "value": "+1-541-754-3016",
+      "userId": 100,
+      "companyId": 100
+    }
+  ]
+}
