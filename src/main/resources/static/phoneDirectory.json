@@ -3,22 +3,27 @@
     {
       "id": 1,
       "firstName": "Oleg",
-      "lastName": "Schukov"
+      "lastName": "Schukov",
+      "password": "pass1"
     },
     {
       "id": 2,
       "firstName": "Anna",
-      "lastName": "Pavlova"
+      "lastName": "Pavlova",
+      "password": "pass2"
     },
     {
       "id": 3,
       "firstName": "Zheka",
-      "lastName": "Schuplyj"
+      "lastName": "Schuplyj",
+      "password": "pass3",
+      "roles": ["REGISTERED_USER","BOOKING_MANAGER"]
     },
     {
       "id": 4,
       "firstName": "Natalia",
-      "lastName": "Zaskoruzlaja"
+      "lastName": "Zaskoruzlaja",
+      "password": "pass4"
     }
   ],
   "phoneCompanies": [

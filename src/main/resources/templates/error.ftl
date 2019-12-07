@@ -6,11 +6,12 @@
 </head>
 <body data-autotests-id="error-page">
 
-<h2>Error:</h2>
-<p>
-  <#if errorMessage??>${errorMessage}</#if>
-</p>
-<a href="/">Back to the import</a></br>
+  <h2>Error:</h2>
+  <p>
+    <#if errorMessage??>${errorMessage}</#if>
+  </p>
+
+  <span>Back to the <a href="/">home</a> page</span></br>
 
 </body>
 </html>

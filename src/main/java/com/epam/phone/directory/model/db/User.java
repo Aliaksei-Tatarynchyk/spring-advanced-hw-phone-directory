@@ -18,6 +18,8 @@ public class User {
 
     String firstName;
     String lastName;
+    String password;
+    String roles = "REGISTERED_USER";
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
     Collection<PhoneNumber> phoneNumbers;
@@ -33,6 +35,8 @@ public class User {
         setId(builder.id);
         setFirstName(builder.firstName);
         setLastName(builder.lastName);
+        setPassword(builder.password);
+        setRoles(builder.roles);
         setPhoneNumbers(builder.phoneNumbers);
     }
 
@@ -44,6 +48,8 @@ public class User {
         private Long id;
         private String firstName;
         private String lastName;
+        private String password;
+        private String roles = "REGISTERED_USER";
         private Collection<PhoneNumber> phoneNumbers;
 
         private Builder() {
@@ -61,6 +67,16 @@ public class User {
 
         public Builder withLastName(String lastName) {
             this.lastName = lastName;
+            return this;
+        }
+
+        public Builder withPassword(String password) {
+            this.password = password;
+            return this;
+        }
+
+        public Builder withRoles(String roles) {
+            this.roles = roles;
             return this;
         }
 
@@ -96,6 +112,22 @@ public class User {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getRoles() {
+        return roles;
+    }
+
+    public void setRoles(String roles) {
+        this.roles = roles;
     }
 
     public Collection<PhoneNumber> getPhoneNumbers() {

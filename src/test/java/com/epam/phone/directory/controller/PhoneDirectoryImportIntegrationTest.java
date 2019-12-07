@@ -2,18 +2,20 @@ package com.epam.phone.directory.controller;
 
 import static org.hamcrest.Matchers.is;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 
 import java.util.Collection;
 
-import org.junit.Assert;
+import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
@@ -38,7 +40,8 @@ import com.epam.phone.directory.test.utils.TestUtils;
     To do that we will use Spring’s MockMvc, and we can ask for that to be injected for us
     by using the @AutoConfigureMockMvc annotation on the test case
  */
-@RunWith(SpringRunner.class)
+//@RunWith(SpringRunner.class) // for junit 4
+@ExtendWith(SpringExtension.class) // for junit 5
 @SpringBootTest
 @AutoConfigureMockMvc
 public class PhoneDirectoryImportIntegrationTest {
@@ -56,23 +59,74 @@ public class PhoneDirectoryImportIntegrationTest {
     PhoneCompanyRepository phoneCompanyRepository;
 
     @Test
-    public void shouldImportAllDataFromJSONFileAndRedirectToUsersPage() throws Exception {
+    public void bookingManager_shouldBeAble_toImportUsersFromJSONFile_andThenBeRedirectToUsersPage() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders
+                .multipart("/import")
+                .file(TestUtils.createMockMultipartFile("/testPhoneDirectory.json", MediaType.APPLICATION_JSON))
+                .with(csrf())
+                .with(user("manager").roles("BOOKING_MANAGER"))
+        )
+        .andExpect(MockMvcResultMatchers.status().is3xxRedirection())
+        .andExpect(MockMvcResultMatchers.redirectedUrl("/users"));
+
+        Collection<User> users = (Collection<User>) userRepository.findAll();
+        MatcherAssert.assertThat(users.size(), is(4));
+
+        Collection<PhoneCompany> phoneCompanies = (Collection<PhoneCompany>) phoneCompanyRepository.findAll();
+        MatcherAssert.assertThat(phoneCompanies.size(), is(3));
+
+        Collection<PhoneNumber> phoneNumbers = (Collection<PhoneNumber>) phoneNumberRepository.findAll();
+        MatcherAssert.assertThat(phoneNumbers.size(), is(5));
+    }
+
+    @Test
+    public void bookingManager_shouldBeRedirectToErrorPage_ifImportIsNotSuccessful() throws Exception {
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders
+                .multipart("/import")
+                .file(TestUtils.createMockMultipartFile("/missingFile.json", MediaType.APPLICATION_JSON))
+                .with(csrf())
+                .with(user("manager").roles("BOOKING_MANAGER"))
+        )
+        .andExpect(MockMvcResultMatchers.status().is4xxClientError())
+        .andReturn();
+
+        result.getResponse().getContentAsString();
+    }
+
+    @Test
+    public void regularUser_shouldNotHaveAccessToTheImportPage() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders
+                .multipart("/import")
+                .file(TestUtils.createMockMultipartFile("/testPhoneDirectory.json", MediaType.APPLICATION_JSON))
+                .with(csrf())
+                .with(user("user").roles("REGISTERED_USER"))
+        )
+        .andExpect(MockMvcResultMatchers.status().isForbidden());
+
+        assertThatAllRepositoriesStillDoNotHaveAnyData();
+    }
+
+    @Test
+    public void anonymousUser_shouldBeRedirectedToLoginPage_ifTryingToAccessImportPage() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders
                 .multipart("/import")
                 .file(TestUtils.createMockMultipartFile("/testPhoneDirectory.json", MediaType.APPLICATION_JSON))
                 .with(csrf())
         )
         .andExpect(MockMvcResultMatchers.status().is3xxRedirection())
-        .andExpect(MockMvcResultMatchers.redirectedUrl("/users"));
+        .andExpect(MockMvcResultMatchers.redirectedUrlPattern("http://*/login"));
 
-        Collection<User> users = (Collection<User>) userRepository.findAll();
-        Assert.assertThat(users.size(), is(4));
-
-        Collection<PhoneCompany> phoneCompanies = (Collection<PhoneCompany>) phoneCompanyRepository.findAll();
-        Assert.assertThat(phoneCompanies.size(), is(3));
-
-        Collection<PhoneNumber> phoneNumbers = (Collection<PhoneNumber>) phoneNumberRepository.findAll();
-        Assert.assertThat(phoneNumbers.size(), is(5));
+        assertThatAllRepositoriesStillDoNotHaveAnyData();
     }
 
+    private void assertThatAllRepositoriesStillDoNotHaveAnyData() {
+        Collection<User> users = (Collection<User>) userRepository.findAll();
+        MatcherAssert.assertThat(users.size(), is(0));
+
+        Collection<PhoneCompany> phoneCompanies = (Collection<PhoneCompany>) phoneCompanyRepository.findAll();
+        MatcherAssert.assertThat(phoneCompanies.size(), is(0));
+
+        Collection<PhoneNumber> phoneNumbers = (Collection<PhoneNumber>) phoneNumberRepository.findAll();
+        MatcherAssert.assertThat(phoneNumbers.size(), is(0));
+    }
 }

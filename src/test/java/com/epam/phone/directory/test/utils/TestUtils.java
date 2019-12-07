@@ -3,6 +3,7 @@ package com.epam.phone.directory.test.utils;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.file.Files;
 
 import org.springframework.http.MediaType;
@@ -18,8 +19,13 @@ public class TestUtils {
      * @throws IOException
      */
     public static MockMultipartFile createMockMultipartFile(String absolutePathToResourceFile, MediaType mediaType) throws URISyntaxException, IOException {
-        byte[] fileBytes = Files.readAllBytes(new File(TestUtils.class.getResource(absolutePathToResourceFile).toURI()).toPath());
-        return new MockMultipartFile("file", absolutePathToResourceFile, mediaType.toString(), fileBytes);
+        URL resource = TestUtils.class.getResource(absolutePathToResourceFile);
+        if (resource != null) {
+            byte[] fileBytes = Files.readAllBytes(new File(resource.toURI()).toPath());
+            return new MockMultipartFile("file", absolutePathToResourceFile, mediaType.toString(), fileBytes);
+        } else {
+            return new MockMultipartFile("file", "", mediaType.toString(), new byte[]{});
+        }
     }
 
 }

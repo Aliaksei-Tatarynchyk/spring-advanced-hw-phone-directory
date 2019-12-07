@@ -34,6 +34,11 @@ public class UserController {
         return new ModelAndView("users", "users", userRepository.findAll());
     }
 
+    @GetMapping("/current")
+    public ModelAndView displayCurrentUser() {
+        return new ModelAndView("user", "user", userRepository.findById(1l).orElse(null));
+    }
+
     @GetMapping(produces = MediaType.APPLICATION_PDF_VALUE)
     public ResponseEntity<InputStreamResource> displayAllUsersAsPDF() {
         Collection<User> users = (Collection<User>) userRepository.findAll();

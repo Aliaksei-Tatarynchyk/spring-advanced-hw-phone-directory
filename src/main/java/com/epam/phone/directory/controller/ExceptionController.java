@@ -9,9 +9,18 @@ import org.springframework.web.servlet.ModelAndView;
 @ControllerAdvice
 public class ExceptionController {
 
+    @ExceptionHandler({IllegalArgumentException.class})
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ModelAndView handleNotValidInputData(Throwable e) {
+        return new ModelAndView("error", "errorMessage", takeErrorMessage(e));
+    }
+
     @ExceptionHandler({Exception.class})
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ModelAndView handleServerException(Throwable e) {
+    public ModelAndView handleServerErrors(Throwable e) {
+        if (e instanceof NullPointerException) {
+            e.printStackTrace();
+        }
         return new ModelAndView("error", "errorMessage", takeErrorMessage(e));
     }
 

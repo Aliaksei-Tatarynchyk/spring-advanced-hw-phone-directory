@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<#assign security=JspTaglibs["http://www.springframework.org/security/tags"] />
 
 <html lang="en">
 <head>
@@ -8,16 +7,20 @@
 <body data-autotests-id="home-page">
 
   <p>
-    Example of the file being imported: <a href="/static/phoneDirectory.json">phoneDirectory.json</a>
-    <form name="phoneDirectory" action="/import" enctype="multipart/form-data" method="POST">
-      <#-- include <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" /> for CSRF protection -->
-      <@security.csrfInput/>
-
-      <input type="file" name="file" /> ⇨
-      <input type="submit" value="Import phone directory" />
-    </form>
-
+    Available actions:
   </p>
+  <ul>
+    <li>
+      <a href="/login">Login</a>. There are 2 predefined users:
+      <ul>
+        <li>REGISTERED_USER: user/user</li>
+        <li>BOOKING_MANAGER: admin/admin</li>
+      </ul>
+    </li>
+    <li><a href="/import">Import users from JSON file</a></li>
+    <li><a href="/users">See all imported users</a></li>
+    <li><a href="/users/current">See the current user</a></li>
+  </ul>
 
 </body>
 </html>
