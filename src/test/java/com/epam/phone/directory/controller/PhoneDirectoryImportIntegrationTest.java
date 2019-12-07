@@ -1,6 +1,7 @@
 package com.epam.phone.directory.controller;
 
 import static org.hamcrest.Matchers.is;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 
 import java.util.Collection;
 
@@ -59,6 +60,7 @@ public class PhoneDirectoryImportIntegrationTest {
         mockMvc.perform(MockMvcRequestBuilders
                 .multipart("/import")
                 .file(TestUtils.createMockMultipartFile("/testPhoneDirectory.json", MediaType.APPLICATION_JSON))
+                .with(csrf())
         )
         .andExpect(MockMvcResultMatchers.status().is3xxRedirection())
         .andExpect(MockMvcResultMatchers.redirectedUrl("/users"));

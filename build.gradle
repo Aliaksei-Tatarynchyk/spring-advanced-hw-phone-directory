@@ -25,9 +25,15 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-freemarker'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'com.google.code.gson:gson:2.8.6'
+
     // I use this old version because Spring AbstractPdfView requires classes from the package com.lowagie.*, that are available only in this version
     implementation 'com.lowagie:itext:2.1.7'
+
+    // Need for correct work of importing JSP taglib to Freemarker
+    implementation 'org.springframework.security:spring-security-taglibs:5.2.1.RELEASE'
+    implementation 'org.apache.tomcat:tomcat-jsp-api:9.0.29'
 
     // https://spring.io/guides/gs/spring-boot/
     // https://docs.spring.io/spring-boot/docs/2.1.6.RELEASE/reference/htmlsingle/#production-ready
@@ -40,6 +46,7 @@ dependencies {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
     }
     testImplementation 'org.springframework:spring-test'
+    testImplementation 'org.springframework.security:spring-security-test'
     testImplementation 'junit:junit'
     testImplementation 'org.hamcrest:hamcrest-all:1.3'
 //    testImplementation 'org.assertj:asserj-core'
