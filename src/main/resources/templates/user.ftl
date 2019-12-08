@@ -14,6 +14,6 @@
     </#if>
   </ul>
 
-  <span>Back to the <a href="/">home</a> page</span></br>
+  <#include "components/backToHome.ftl">
 </body>
 </html>

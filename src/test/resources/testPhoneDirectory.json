@@ -3,22 +3,31 @@
     {
       "id": 1,
       "firstName": "Oleg",
-      "lastName": "Schukov"
+      "lastName": "Schukov",
+      "username": "oleg_schukov",
+      "password": "{noop}password"
     },
     {
       "id": 2,
       "firstName": "Anna",
-      "lastName": "Pavlova"
+      "lastName": "Pavlova",
+      "username": "aniutka",
+      "password": "{noop}password"
     },
     {
       "id": 3,
       "firstName": "Zheka",
-      "lastName": "Schuplyj"
+      "lastName": "Schuplyj",
+      "username": "bigBoss",
+      "password": "{noop}admin",
+      "roles": ["ROLE_REGISTERED_USER", "ROLE_BOOKING_MANAGER"]
     },
     {
       "id": 4,
       "firstName": "Natalia",
-      "lastName": "Zaskoruzlaja"
+      "lastName": "Zaskoruzlaja",
+      "username": "natali1989",
+      "password": "{noop}password"
     }
   ],
   "phoneCompanies": [

@@ -1,13 +1,14 @@
 package com.epam.phone.directory.model.json;
 
-import java.util.List;
+import static org.springframework.util.CollectionUtils.isEmpty;
 
-import com.google.common.base.Joiner;
+import java.util.List;
 
 public class User {
     Long id;
     String firstName;
     String lastName;
+    String username;
     String password;
     List<String> roles;
 
@@ -23,6 +24,10 @@ public class User {
         return lastName;
     }
 
+    public String getUsername() {
+        return username;
+    }
+
     public String getPassword() {
         return password;
     }
@@ -36,9 +41,10 @@ public class User {
                 .withId(this.id)
                 .withFirstName(this.firstName)
                 .withLastName(this.lastName)
+                .withUsername(this.username)
                 .withPassword(this.password);
-        if (roles != null) {
-            builder.withRoles(Joiner.on(',').join(this.roles));
+        if (!isEmpty(roles)) {
+            builder.withRoles(this.roles);
         }
         return builder.build();
     }

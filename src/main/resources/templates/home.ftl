@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<#assign security=JspTaglibs["http://www.springframework.org/security/tags"] />
 
 <html lang="en">
 <head>
@@ -11,15 +12,17 @@
   </p>
   <ul>
     <li>
-      <a href="/login">Login</a>. There are 2 predefined users:
-      <ul>
-        <li>REGISTERED_USER: user/user</li>
-        <li>BOOKING_MANAGER: admin/admin</li>
-      </ul>
+      <a href="/login">Login</a>. There is a predefined admin/admin user to be able to make an initial import of users:
     </li>
     <li><a href="/import">Import users from JSON file</a></li>
     <li><a href="/users">See all imported users</a></li>
     <li><a href="/users/current">See the current user</a></li>
+    <li>
+      <a href="javascript:void(0);" onclick="document.getElementById('logout-form').submit();">Logout</a>
+      <form id="logout-form" action="/logout" method="post" style="visibility: hidden">
+        <@security.csrfInput/>
+      </form>
+    </li>
   </ul>
 
 </body>

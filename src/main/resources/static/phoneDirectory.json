@@ -4,26 +4,30 @@
       "id": 1,
       "firstName": "Oleg",
       "lastName": "Schukov",
-      "password": "pass1"
+      "username": "oleg_schukov",
+      "password": "{noop}password"
     },
     {
       "id": 2,
       "firstName": "Anna",
       "lastName": "Pavlova",
-      "password": "pass2"
+      "username": "aniutka",
+      "password": "{noop}password"
     },
     {
       "id": 3,
       "firstName": "Zheka",
       "lastName": "Schuplyj",
-      "password": "pass3",
-      "roles": ["REGISTERED_USER","BOOKING_MANAGER"]
+      "username": "bigBoss",
+      "password": "{noop}admin",
+      "roles": ["ROLE_REGISTERED_USER", "ROLE_BOOKING_MANAGER"]
     },
     {
       "id": 4,
       "firstName": "Natalia",
       "lastName": "Zaskoruzlaja",
-      "password": "pass4"
+      "username": "natali1989",
+      "password": "{noop}password"
     }
   ],
   "phoneCompanies": [

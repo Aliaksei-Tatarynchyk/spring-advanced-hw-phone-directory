@@ -12,7 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.epam.phone.directory.model.form.PhoneDirectoryImportForm;
-import com.epam.phone.directory.service.pdf.PhoneDirectoryImporter;
+import com.epam.phone.directory.service.PhoneDirectoryImporter;
 
 @Controller
 @RequestMapping("/import")

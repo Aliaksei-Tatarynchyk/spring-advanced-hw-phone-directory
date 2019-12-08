@@ -2,6 +2,7 @@ package com.epam.phone.directory.model.db;
 
 import java.util.Collection;
 
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -9,8 +10,17 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
+import com.google.common.collect.Lists;
+
 @Entity
 public class User {
+
+    /**
+     * All users in the database should have the REGISTERED_USER role by default.
+     * User role that is written to DB must have a prefix ROLE_ because it is automatically appended to the roles in
+     * {@link com.epam.phone.directory.config.security.SecurityConfiguration}
+     */
+    public static final String DEFAULT_USER_ROLE = "ROLE_REGISTERED_USER";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,8 +28,11 @@ public class User {
 
     String firstName;
     String lastName;
+    String username;
     String password;
-    String roles = "REGISTERED_USER";
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    Collection<String> roles = Lists.newArrayList(DEFAULT_USER_ROLE);
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
     Collection<PhoneNumber> phoneNumbers;
@@ -35,6 +48,7 @@ public class User {
         setId(builder.id);
         setFirstName(builder.firstName);
         setLastName(builder.lastName);
+        setUsername(builder.username);
         setPassword(builder.password);
         setRoles(builder.roles);
         setPhoneNumbers(builder.phoneNumbers);
@@ -48,8 +62,9 @@ public class User {
         private Long id;
         private String firstName;
         private String lastName;
+        private String username;
         private String password;
-        private String roles = "REGISTERED_USER";
+        private Collection<String> roles = Lists.newArrayList(DEFAULT_USER_ROLE);
         private Collection<PhoneNumber> phoneNumbers;
 
         private Builder() {
@@ -70,12 +85,17 @@ public class User {
             return this;
         }
 
+        public Builder withUsername(String username) {
+            this.username = username;
+            return this;
+        }
+
         public Builder withPassword(String password) {
             this.password = password;
             return this;
         }
 
-        public Builder withRoles(String roles) {
+        public Builder withRoles(Collection<String> roles) {
             this.roles = roles;
             return this;
         }
@@ -114,6 +134,14 @@ public class User {
         this.lastName = lastName;
     }
 
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
     public String getPassword() {
         return password;
     }
@@ -122,11 +150,11 @@ public class User {
         this.password = password;
     }
 
-    public String getRoles() {
+    public Collection<String> getRoles() {
         return roles;
     }
 
-    public void setRoles(String roles) {
+    public void setRoles(Collection<String> roles) {
         this.roles = roles;
     }
 

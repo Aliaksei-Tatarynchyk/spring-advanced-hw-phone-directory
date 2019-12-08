@@ -1,4 +1,4 @@
-package com.epam.phone.directory.service.pdf;
+package com.epam.phone.directory.service;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;

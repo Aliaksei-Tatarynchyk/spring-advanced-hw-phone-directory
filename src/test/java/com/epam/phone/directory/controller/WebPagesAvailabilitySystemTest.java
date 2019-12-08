@@ -16,7 +16,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.epam.phone.directory.Application;
-import com.epam.phone.directory.service.pdf.PhoneDirectoryImporter;
+import com.epam.phone.directory.service.PhoneDirectoryImporter;
 import com.epam.phone.directory.test.utils.TestUtils;
 
 /*
@@ -72,6 +72,13 @@ public class WebPagesAvailabilitySystemTest {
         Assertions.assertThat(restTemplate.getForObject("http://localhost:" + port + "/users/current", String.class))
                 .as("User page for the current user should be available, even if nothing is imported")
                 .contains("data-autotests-id=\"user-page\"");
+    }
+
+    @Test
+    public void shouldServeLoginPage() throws Exception {
+        Assertions.assertThat(restTemplate.getForObject("http://localhost:" + port + "/login", String.class))
+                .as("Login page should be available always. It should allow a user to sign in to the application")
+                .contains("data-autotests-id=\"login-page\"");
     }
 
     @Test
