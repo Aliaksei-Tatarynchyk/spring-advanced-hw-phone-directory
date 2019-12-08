@@ -12,7 +12,8 @@
   </p>
   <ul>
     <li>
-      <a href="/login">Login</a>. There is a predefined admin/admin user to be able to make an initial import of users:
+      <a href="/login">Login</a>. There is a predefined "admin/admin" user to be able to make an initial import of users. <br>
+      Default password for all regular users in <a href="/static/phoneDirectory.json">phoneDirectory.json</a> is "password", for manager is "admin".
     </li>
     <li><a href="/import">Import users from JSON file</a></li>
     <li><a href="/users">See all imported users</a></li>

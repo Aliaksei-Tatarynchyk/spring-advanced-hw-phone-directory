@@ -12,6 +12,8 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 @EnableWebSecurity
@@ -22,11 +24,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-//        PasswordEncoder encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
+        PasswordEncoder encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
         auth.authenticationProvider(daoAuthenticationProvider())
                 .inMemoryAuthentication()
                     // roles should not have prefix ROLE_ because this prefix is added automatically
-                    .withUser("admin").password("{noop}admin").roles("REGISTERED_USER", "BOOKING_MANAGER");
+                    .withUser("admin").password(encoder.encode("admin")).roles("REGISTERED_USER", "BOOKING_MANAGER");
     }
 
     @Bean
