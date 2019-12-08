@@ -38,15 +38,17 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.formLogin().loginPage("/login").permitAll();
-        http.logout().permitAll();
         http.authorizeRequests()
-                .antMatchers("/").permitAll()
-                .antMatchers("/static/**").permitAll()
-                // roles should not have prefix ROLE_ because this prefix is added automatically
-                .antMatchers("/users/current").hasAnyRole("REGISTERED_USER")
-                .antMatchers("/**").hasAnyRole("BOOKING_MANAGER");
-        http.exceptionHandling().accessDeniedPage("/accessDenied");
+                    .antMatchers("/").permitAll()
+                    .antMatchers("/static/**").permitAll()
+                    // roles should not have prefix ROLE_ because this prefix is added automatically
+                    .antMatchers("/users/current").hasAnyRole("REGISTERED_USER")
+                    .antMatchers("/**").hasAnyRole("BOOKING_MANAGER")
+                .and().formLogin().loginPage("/login").permitAll()
+                .and().exceptionHandling().accessDeniedPage("/accessDenied")
+                .and().logout().permitAll()
+                .and().rememberMe();
+
         allowAnonymousAccessToH2WebConsole(http);
     }
 

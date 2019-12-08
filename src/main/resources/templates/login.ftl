@@ -23,6 +23,7 @@
 
       <label for="username">Username</label><input type="text" name="username" />
       <label for="password">Password</label><input type="password" name="password" />
+      <label for="remember-me">Remember Me?</label><input type="checkbox" name="remember-me" />
 
       <input type="submit" value="Log in" />
     </fieldset>
