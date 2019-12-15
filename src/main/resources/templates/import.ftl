@@ -3,7 +3,7 @@
 
 <html lang="en">
 <head>
-  <title>Import page</title>
+  <title>Import dictionary</title>
 </head>
 <body data-autotests-id="import-page">
 
@@ -16,12 +16,6 @@
   </p>
 
   <#include "components/backToHome.ftl">
-
-<#--  <#if importDone??>
-    <p style="color: green">
-      Import is finished successfully. <a href="/users">Click to see the imported users</a>.
-    </p>
-  </#if>-->
 
 </body>
 </html>

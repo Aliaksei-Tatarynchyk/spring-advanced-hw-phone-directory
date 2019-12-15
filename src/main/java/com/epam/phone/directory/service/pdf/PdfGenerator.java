@@ -60,8 +60,8 @@ public class PdfGenerator {
         StringBuilder sb = new StringBuilder();
         for (PhoneNumber phoneNumber : user.getPhoneNumbers()) {
             sb.append(phoneNumber.getValue());
-            if (phoneNumber.getPhoneCompany() != null) {
-                sb.append(" (").append(phoneNumber.getPhoneCompany().getName()).append(")");
+            if (phoneNumber.getMobileOperator() != null) {
+                sb.append(" (").append(phoneNumber.getMobileOperator().getName()).append(")");
             }
             sb.append("; ");
         }

@@ -2,19 +2,25 @@
 
 <html lang="en" xmlns="http://www.w3.org/1999/html">
 <head>
-  <title>Users page</title>
+  <title>All users</title>
   <script src="/static/custom.js"></script>
 </head>
 <body data-autotests-id="users-page">
 
   <h2>Users:</h2>
-  <ul>
-    <#list users as user>
-      <#include "components/userInfo.ftl">
-    </#list>
-  </ul>
+  <#if users?size == 0>
+    <p style="color: #ff6107">
+      There are no users currently in the application, but you can <a href="/import">import</a> them.
+    </p>
+  <#else>
+    <ul>
+      <#list users as user>
+        <#include "components/userInfo.ftl">
+      </#list>
+    </ul>
+  </#if>
 
-  <span>Back to the <a href="/import">import</a> / <a href="/">home</a> page</span></br>
+  <#include "components/backToHome.ftl">
 
   <span>Download as PDF:</span>
   <ul style="display: inline-grid;">

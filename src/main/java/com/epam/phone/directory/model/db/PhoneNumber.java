@@ -1,6 +1,7 @@
 package com.epam.phone.directory.model.db;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -8,6 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 
 @Entity
 public class PhoneNumber {
@@ -16,24 +18,34 @@ public class PhoneNumber {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long id;
 
+    @Column(name = "phone_number", unique = true)
     String value;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
     User user;
 
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "account_id")
+    UserAccount userAccount;
+
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "phone_company_id")
-    PhoneCompany phoneCompany;
+    @JoinColumn(name = "mobile_operator_id")
+    PhoneCompany mobileOperator;
 
     public PhoneNumber() {
+    }
+
+    public PhoneNumber(Long id) {
+        this.id = id;
     }
 
     private PhoneNumber(Builder builder) {
         setId(builder.id);
         setValue(builder.value);
         setUser(builder.user);
-        setPhoneCompany(builder.phoneCompany);
+        setUserAccount(builder.userAccount);
+        setMobileOperator(builder.mobileOperator);
     }
 
     public static Builder newBuilder() {
@@ -44,7 +56,8 @@ public class PhoneNumber {
         private Long id;
         private String value;
         private User user;
-        private PhoneCompany phoneCompany;
+        private UserAccount userAccount;
+        private PhoneCompany mobileOperator;
 
         private Builder() {
         }
@@ -64,8 +77,13 @@ public class PhoneNumber {
             return this;
         }
 
-        public Builder withPhoneCompany(PhoneCompany phoneCompany) {
-            this.phoneCompany = phoneCompany;
+        public Builder withUserAccount(UserAccount userAccount) {
+            this.userAccount = userAccount;
+            return this;
+        }
+
+        public Builder withMobileOperator(PhoneCompany mobileOperator) {
+            this.mobileOperator = mobileOperator;
             return this;
         }
 
@@ -90,19 +108,27 @@ public class PhoneNumber {
         this.value = value;
     }
 
-    public PhoneCompany getPhoneCompany() {
-        return phoneCompany;
-    }
-
-    public void setPhoneCompany(PhoneCompany phoneCompany) {
-        this.phoneCompany = phoneCompany;
-    }
-
     public User getUser() {
         return user;
     }
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public UserAccount getUserAccount() {
+        return userAccount;
+    }
+
+    public void setUserAccount(UserAccount userAccount) {
+        this.userAccount = userAccount;
+    }
+
+    public PhoneCompany getMobileOperator() {
+        return mobileOperator;
+    }
+
+    public void setMobileOperator(PhoneCompany phoneCompany) {
+        this.mobileOperator = phoneCompany;
     }
 }

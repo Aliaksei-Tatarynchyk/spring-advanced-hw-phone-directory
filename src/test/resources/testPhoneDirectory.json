@@ -37,11 +37,13 @@
     },
     {
       "id": 2,
-      "name": "Verizon"
+      "name": "Verizon",
+      "accountBalance": 200
     },
     {
       "id": 3,
-      "name": "T-Mobile"
+      "name": "T-Mobile",
+      "accountBalance": 1000
     }
   ],
   "phoneNumbers": [
@@ -49,25 +51,29 @@
       "id": 1,
       "value": "+1-541-754-3011",
       "userId": 1,
-      "companyId": 1
+      "companyId": 1,
+      "accountBalance": 0.0
     },
     {
       "id": 2,
       "value": "+1-541-754-3012",
       "userId": 2,
-      "companyId": 1
+      "companyId": 1,
+      "accountBalance": 2.5
     },
     {
       "id": 3,
       "value": "+1-541-754-3013",
       "userId": 2,
-      "companyId": 2
+      "companyId": 2,
+      "accountBalance": 5
     },
     {
       "id": 4,
       "value": "+1-541-754-3014",
       "userId": 3,
-      "companyId": 100
+      "companyId": 100,
+      "accountBalance": 15
     },
     {
       "id": 5,
@@ -79,7 +85,8 @@
       "id": 6,
       "value": "+1-541-754-3016",
       "userId": 100,
-      "companyId": 100
+      "companyId": 100,
+      "accountBalance": 100
     }
   ]
 }

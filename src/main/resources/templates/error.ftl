@@ -2,7 +2,7 @@
 
 <html lang="en" xmlns="http://www.w3.org/1999/html">
 <head>
-  <title>Error page</title>
+  <title>Error</title>
 </head>
 <body data-autotests-id="error-page">
 

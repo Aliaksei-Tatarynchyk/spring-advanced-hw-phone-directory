@@ -3,7 +3,7 @@
 
 <html lang="en">
 <head>
-  <title>Login page</title>
+  <title>Log in</title>
 </head>
 <body data-autotests-id="login-page">
 

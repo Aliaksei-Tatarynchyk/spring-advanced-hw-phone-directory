@@ -24,6 +24,9 @@ configurations {
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-freemarker'
+    // if we're using a Spring Boot project, and have a spring-data-* or spring-tx dependencies on the classpath,
+    // then transaction management will be enabled by default, so it is not needed to either use @EnableTransactionManagement
+    // or configure PlatformTransactionManager manually
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'com.google.code.gson:gson:2.8.6'

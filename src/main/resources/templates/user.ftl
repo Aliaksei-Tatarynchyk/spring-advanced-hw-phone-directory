@@ -2,8 +2,7 @@
 
 <html lang="en" xmlns="http://www.w3.org/1999/html">
 <head>
-  <title>User page</title>
-  <script src="/static/custom.js"></script>
+  <title>User details</title>
 </head>
 <body data-autotests-id="user-page">
 
@@ -15,5 +14,6 @@
   </ul>
 
   <#include "components/backToHome.ftl">
+
 </body>
 </html>

@@ -34,10 +34,14 @@ public class User {
     @ElementCollection(fetch = FetchType.EAGER)
     Collection<String> roles = Lists.newArrayList(DEFAULT_USER_ROLE);
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user") // "user" is the name of the field in PhoneNumber entity that corresponds to this relation
     Collection<PhoneNumber> phoneNumbers;
 
     public User() {
+    }
+
+    public User(Long id) {
+        this.id = id;
     }
 
     public String getFullName() {

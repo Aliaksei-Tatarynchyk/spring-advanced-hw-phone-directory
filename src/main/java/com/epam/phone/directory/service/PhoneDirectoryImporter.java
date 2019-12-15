@@ -12,6 +12,7 @@ import com.epam.phone.directory.model.json.PhoneNumber;
 import com.epam.phone.directory.model.json.User;
 import com.epam.phone.directory.repository.PhoneCompanyRepository;
 import com.epam.phone.directory.repository.PhoneNumberRepository;
+import com.epam.phone.directory.repository.UserAccountRepository;
 import com.epam.phone.directory.repository.UserRepository;
 import com.google.gson.Gson;
 
@@ -21,29 +22,30 @@ public class PhoneDirectoryImporter {
     final UserRepository userRepository;
     final PhoneCompanyRepository phoneCompanyRepository;
     final PhoneNumberRepository phoneNumberRepository;
+    final UserAccountRepository userAccountRepository;
 
-    public PhoneDirectoryImporter(UserRepository userRepository, PhoneCompanyRepository phoneCompanyRepository, PhoneNumberRepository phoneNumberRepository) {
+    public PhoneDirectoryImporter(UserRepository userRepository, PhoneCompanyRepository phoneCompanyRepository, PhoneNumberRepository phoneNumberRepository,
+                                  UserAccountRepository userAccountRepository) {
         this.userRepository = userRepository;
         this.phoneCompanyRepository = phoneCompanyRepository;
         this.phoneNumberRepository = phoneNumberRepository;
+        this.userAccountRepository = userAccountRepository;
     }
 
     public void importPhoneDirectory(MultipartFile importedFile) throws IOException {
         PhoneDirectory phoneDirectory = takePhoneDirectory(importedFile);
 
         for (User user : phoneDirectory.getUsers()) {
-            userRepository.save(user.toJPA());
+            userRepository.save(user.toJPA(userRepository));
         }
 
         for (PhoneCompany phoneCompany : phoneDirectory.getPhoneCompanies()) {
-            phoneCompanyRepository.save(phoneCompany.toJPA());
+            phoneCompanyRepository.save(phoneCompany.toJPA(phoneCompanyRepository));
         }
 
         for (PhoneNumber phoneNumber : phoneDirectory.getPhoneNumbers()) {
-            com.epam.phone.directory.model.db.PhoneNumber jpaPhoneNumber = phoneNumber.toJPA();
-            userRepository.findById(phoneNumber.getUserId()).ifPresent(it -> jpaPhoneNumber.setUser(it));
-            phoneCompanyRepository.findById(phoneNumber.getCompanyId()).ifPresent(it -> jpaPhoneNumber.setPhoneCompany(it));
-            if (jpaPhoneNumber.getUser() != null || jpaPhoneNumber.getPhoneCompany() != null) {
+            com.epam.phone.directory.model.db.PhoneNumber jpaPhoneNumber = phoneNumber.toJPA(phoneNumberRepository, userRepository, phoneCompanyRepository);
+            if (jpaPhoneNumber.getUser() != null || jpaPhoneNumber.getMobileOperator() != null) {
                 phoneNumberRepository.save(jpaPhoneNumber);
             }
         }

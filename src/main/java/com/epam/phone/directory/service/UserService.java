@@ -13,7 +13,8 @@ import io.micrometer.core.instrument.util.StringUtils;
 
 @Service
 public class UserService {
-    private UserRepository userRepository;
+
+    final UserRepository userRepository;
 
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
@@ -33,4 +34,5 @@ public class UserService {
                 .filter(user -> username.equals(user.getUsername()))
                 .findFirst().orElse(null);
     }
+
 }
