@@ -131,4 +131,20 @@ public class PhoneNumber {
     public void setMobileOperator(PhoneCompany phoneCompany) {
         this.mobileOperator = phoneCompany;
     }
+
+    public com.epam.phone.directory.model.json.PhoneNumber toJson() {
+        com.epam.phone.directory.model.json.PhoneNumber jsonPhoneNumber = new com.epam.phone.directory.model.json.PhoneNumber();
+
+        if (id != null) {
+            jsonPhoneNumber.setId(id);
+        }
+        if (value != null) {
+            jsonPhoneNumber.setValue(value);
+        }
+        if (mobileOperator != null) {
+            jsonPhoneNumber.setCompanyId(mobileOperator.getId());
+        }
+
+        return jsonPhoneNumber;
+    }
 }

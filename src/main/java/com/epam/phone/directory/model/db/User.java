@@ -1,6 +1,7 @@
 package com.epam.phone.directory.model.db;
 
 import java.util.Collection;
+import java.util.stream.Collectors;
 
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
@@ -9,6 +10,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+
+import org.springframework.util.CollectionUtils;
 
 import com.google.common.collect.Lists;
 
@@ -168,5 +171,27 @@ public class User {
 
     public void setPhoneNumbers(Collection<PhoneNumber> phoneNumbers) {
         this.phoneNumbers = phoneNumbers;
+    }
+
+    public com.epam.phone.directory.model.json.User toJson() {
+        com.epam.phone.directory.model.json.User jsonUser = new com.epam.phone.directory.model.json.User();
+
+        if (id != null) {
+            jsonUser.setId(id);
+        }
+        if (firstName != null) {
+            jsonUser.setFirstName(firstName);
+        }
+        if (lastName != null) {
+            jsonUser.setLastName(lastName);
+        }
+        if (username != null) {
+            jsonUser.setUsername(username);
+        }
+        if (!CollectionUtils.isEmpty(phoneNumbers)) {
+            jsonUser.setPhoneNumbers(phoneNumbers.stream().map(PhoneNumber::toJson).collect(Collectors.toList()));
+        }
+
+        return jsonUser;
     }
 }

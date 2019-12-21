@@ -1,5 +1,6 @@
 package com.epam.phone.directory.controller;
 
+import java.nio.charset.StandardCharsets;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
@@ -12,6 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -83,7 +85,8 @@ public class WebPagesAvailabilitySystemTest {
 
     @Test
     public void shouldDisplayUsersOnUsersPage_afterImportingThemFromJsonFile() throws Exception {
-        phoneDirectoryImporter.importPhoneDirectory(TestUtils.createMockMultipartFile("/testPhoneDirectory.json", MediaType.APPLICATION_JSON));
+        MockMultipartFile mockMultipartFile = TestUtils.createMockMultipartFile("/testPhoneDirectory.json", MediaType.APPLICATION_JSON);
+        phoneDirectoryImporter.importPhoneDirectory(new String(mockMultipartFile.getBytes(), StandardCharsets.UTF_8));
 
         Assertions.assertThat(restTemplate.getForObject("http://localhost:" + port + "/users", String.class))
                 .as("Users page should be available and should display 4 users after importing them from '/testPhoneDirectory.json'")

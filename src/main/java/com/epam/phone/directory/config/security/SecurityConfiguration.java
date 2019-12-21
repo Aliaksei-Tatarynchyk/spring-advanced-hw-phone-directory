@@ -5,12 +5,14 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.annotation.web.configurers.RememberMeConfigurer;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -28,7 +30,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         auth.authenticationProvider(daoAuthenticationProvider())
                 .inMemoryAuthentication()
                     // roles should not have prefix ROLE_ because this prefix is added automatically
-                    .withUser("admin").password(encoder.encode("admin")).roles("REGISTERED_USER", "BOOKING_MANAGER");
+                    .withUser("admin").password(encoder.encode("admin")).roles("REGISTERED_USER", "BOOKING_MANAGER", "REST_USER");
     }
 
     @Bean
@@ -40,7 +42,13 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests()
+        configureForWeb(http);
+        configureForREST(http);
+        allowAnonymousAccessToH2WebConsole(http);
+    }
+
+    private RememberMeConfigurer<HttpSecurity> configureForWeb(HttpSecurity http) throws Exception {
+        return http.authorizeRequests()
                     .antMatchers("/").permitAll()
                     .antMatchers("/static/**").permitAll()
                     // roles should not have prefix ROLE_ because this prefix is added automatically
@@ -50,8 +58,16 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .and().exceptionHandling().accessDeniedPage("/accessDenied")
                 .and().logout().permitAll()
                 .and().rememberMe();
+    }
 
-        allowAnonymousAccessToH2WebConsole(http);
+    private void configureForREST(HttpSecurity http) throws Exception {
+        http.authorizeRequests()
+                .antMatchers(HttpMethod.GET, "/api/**").hasAnyRole("REST_USER")
+                .antMatchers(HttpMethod.POST, "/api/**").hasAnyRole("REST_USER")
+                .antMatchers(HttpMethod.PUT, "/api/**").hasAnyRole("REST_USER")
+                .antMatchers(HttpMethod.PATCH, "/api/**").hasAnyRole("REST_USER")
+            .and().httpBasic()
+            .and().csrf().ignoringAntMatchers("/api/**");
     }
 
     // add these lines to use H2 web console

@@ -1,6 +1,7 @@
 package com.epam.phone.directory.controller;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
@@ -36,7 +37,7 @@ public class ImportController {
             throw new IllegalArgumentException("There is no file to import, please select the file and try again");
         }
 
-        phoneDirectoryImporter.importPhoneDirectory(importedFile);
+        phoneDirectoryImporter.importPhoneDirectory(new String(importedFile.getBytes(), StandardCharsets.UTF_8));
 
         return new ModelAndView("redirect:/users");
     }

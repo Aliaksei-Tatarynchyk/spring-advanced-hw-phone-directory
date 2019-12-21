@@ -35,4 +35,7 @@ public class UserService {
                 .findFirst().orElse(null);
     }
 
+    public UserRepository getUserRepository() {
+        return userRepository;
+    }
 }

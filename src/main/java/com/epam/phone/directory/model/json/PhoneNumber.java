@@ -18,20 +18,40 @@ public class PhoneNumber {
         return id;
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public String getValue() {
         return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
     }
 
     public Long getUserId() {
         return userId;
     }
 
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
     public Long getCompanyId() {
         return companyId;
     }
 
+    public void setCompanyId(Long companyId) {
+        this.companyId = companyId;
+    }
+
     public Double getAccountBalance() {
         return accountBalance;
+    }
+
+    public void setAccountBalance(Double accountBalance) {
+        this.accountBalance = accountBalance;
     }
 
     public com.epam.phone.directory.model.db.PhoneNumber toJPA(PhoneNumberRepository phoneNumberRepository, UserRepository userRepository, PhoneCompanyRepository phoneCompanyRepository) {
