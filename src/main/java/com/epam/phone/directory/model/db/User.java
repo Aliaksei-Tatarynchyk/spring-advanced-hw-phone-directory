@@ -1,5 +1,6 @@
 package com.epam.phone.directory.model.db;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
@@ -38,7 +39,7 @@ public class User {
     Collection<String> roles = Lists.newArrayList(DEFAULT_USER_ROLE);
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user") // "user" is the name of the field in PhoneNumber entity that corresponds to this relation
-    Collection<PhoneNumber> phoneNumbers;
+    Collection<PhoneNumber> phoneNumbers = new ArrayList<>();
 
     public User() {
     }
