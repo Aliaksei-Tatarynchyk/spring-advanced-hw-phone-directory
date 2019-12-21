@@ -1,4 +1,4 @@
-package com.epam.phone.directory.config.viewresolver;
+package com.epam.phone.directory.config;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
