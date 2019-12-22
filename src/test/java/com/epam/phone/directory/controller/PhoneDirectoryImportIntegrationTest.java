@@ -96,6 +96,13 @@ public class PhoneDirectoryImportIntegrationTest {
     @Test
     public void regularUser_shouldNotHaveAccessToTheImportPage() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders
+                .get("/import")
+                .with(csrf())
+                .with(user("user").roles("REGISTERED_USER"))
+        )
+        .andExpect(MockMvcResultMatchers.status().isForbidden());
+
+        mockMvc.perform(MockMvcRequestBuilders
                 .multipart("/import")
                 .file(TestUtils.createMockMultipartFile("/testPhoneDirectory.json", MediaType.APPLICATION_JSON))
                 .with(csrf())
@@ -108,6 +115,13 @@ public class PhoneDirectoryImportIntegrationTest {
 
     @Test
     public void anonymousUser_shouldBeRedirectedToLoginPage_ifTryingToAccessImportPage() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders
+                .get("/import")
+                .with(csrf())
+        )
+        .andExpect(MockMvcResultMatchers.status().is3xxRedirection())
+        .andExpect(MockMvcResultMatchers.redirectedUrlPattern("http://*/login"));
+
         mockMvc.perform(MockMvcRequestBuilders
                 .multipart("/import")
                 .file(TestUtils.createMockMultipartFile("/testPhoneDirectory.json", MediaType.APPLICATION_JSON))

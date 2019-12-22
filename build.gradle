@@ -32,6 +32,9 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.6'
     implementation 'com.google.guava:guava:28.1-jre'
 
+    // to fix sending PATCH requests using RestTemplate
+    implementation 'org.apache.httpcomponents:httpclient:4.4.1'
+
     // I use this old version because Spring AbstractPdfView requires classes from the package com.lowagie.*, that are available only in this version
     implementation 'com.lowagie:itext:2.1.7'
 

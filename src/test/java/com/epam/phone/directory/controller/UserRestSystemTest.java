@@ -13,14 +13,19 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.client.RestTemplate;
 
 import com.epam.phone.directory.Application;
+import com.epam.phone.directory.model.json.User;
 import com.epam.phone.directory.service.PhoneDirectoryImporter;
 import com.google.common.io.Resources;
+import com.google.gson.Gson;
 
 /*
     https://spring.io/guides/gs/testing-web/
@@ -47,7 +52,7 @@ public class UserRestSystemTest {
     private PhoneDirectoryImporter phoneDirectoryImporter;
 
     @Test
-    public void shouldServeUsersAPI() throws Exception {
+    public void shouldServeUsersAPIandDoContentNegotiationForPDFandJSON() throws Exception {
         URL jsonPath = this.getClass().getResource("/testPhoneDirectory.json");
         String json = Resources.toString(jsonPath, StandardCharsets.UTF_8);
         phoneDirectoryImporter.importPhoneDirectory(json);
@@ -77,6 +82,48 @@ public class UserRestSystemTest {
         Assertions.assertThat(pdfBodyAsString)
                 .as("API should return first 3 users in PDF format if the mediaType is application/pdf (http header \"Accept: application/pdf\")")
                 .contains("%PDF-1.4");
+    }
+
+    @Test
+    public void shouldAddUsersUsingPOSTToUsersAPI_andUpdateUser_UsingPATCHorPUT() throws Exception {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        User user = new User();
+        user.setFirstName("testFirstName");
+        user.setLastName("testLastName");
+        user.setUsername("testUsername");
+        String body = new Gson().toJson(user, User.class);
+        HttpEntity<String> entity = new HttpEntity<>(body, headers);
+        ResponseEntity<String> response = restTemplate.exchange("http://localhost:" + port + "/api/users", HttpMethod.POST, entity, String.class);
+        Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+        Assertions.assertThat(response.getBody()).isEqualTo("{\"id\":1,\"firstName\":\"testFirstName\",\"lastName\":\"testLastName\",\"username\":\"testUsername\"}");
+        Assertions.assertThat(response.getHeaders().get("Content-Type")).contains("application/json;charset=UTF-8");
+
+        User updatedUser = new User();
+        updatedUser.setLastName("updatedLastName");
+        body = new Gson().toJson(updatedUser, User.class);
+        HttpHeaders patchHeaders = new HttpHeaders();
+        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+        MediaType mediaType = new MediaType("application", "merge-patch+json");
+        patchHeaders.setContentType(mediaType);
+        HttpEntity<String> patchEntity = new HttpEntity<>(body, headers);
+        HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
+        RestTemplate patchRestTemplate = new RestTemplate(requestFactory);
+        response = patchRestTemplate.exchange("http://localhost:" + port + "/api/users/1", HttpMethod.PATCH, patchEntity, String.class);
+        Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        Assertions.assertThat(response.getBody()).isEqualTo("{\"id\":1,\"firstName\":\"testFirstName\",\"lastName\":\"updatedLastName\",\"username\":\"testUsername\"}");
+        Assertions.assertThat(response.getHeaders().get("Content-Type")).contains("application/json;charset=UTF-8");
+
+        User replacedUser = new User();
+        replacedUser.setLastName("fullyReplacedLastName");
+        body = new Gson().toJson(replacedUser, User.class);
+        entity = new HttpEntity<>(body, headers);
+        response = restTemplate.exchange("http://localhost:" + port + "/api/users/1", HttpMethod.PUT, entity, String.class);
+        Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        Assertions.assertThat(response.getBody()).isEqualTo("{\"id\":1,\"firstName\":\"\",\"lastName\":\"fullyReplacedLastName\",\"username\":\"\"}");
+        Assertions.assertThat(response.getHeaders().get("Content-Type")).contains("application/json;charset=UTF-8");
     }
 
 }

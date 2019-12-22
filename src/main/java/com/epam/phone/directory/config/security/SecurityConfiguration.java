@@ -5,19 +5,20 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
-import org.springframework.http.HttpMethod;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.annotation.web.configurers.RememberMeConfigurer;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-@Configuration
+/**
+ * https://docs.spring.io/spring-security/site/docs/current/reference/htmlsingle/#multiple-httpsecurity
+ */
 @EnableWebSecurity
 @Profile(value = {"dev", "default"}) // to enable security only for live application and disable it for tests
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
@@ -42,44 +43,48 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        configureForWeb(http);
-        configureForREST(http);
-        allowAnonymousAccessToH2WebConsole(http);
+        // add these lines to use H2 web console
+        http.authorizeRequests()
+                .antMatchers("/h2-console/**").permitAll()
+                .and().csrf().ignoringAntMatchers("/h2-console/**");
+        http.headers().frameOptions().sameOrigin();
     }
 
-    private RememberMeConfigurer<HttpSecurity> configureForWeb(HttpSecurity http) throws Exception {
-        return http.authorizeRequests()
+    @Configuration
+    @Order(1)
+    @Profile(value = {"dev", "default"})
+    public static class FormLoginWebSecurityConfigurerAdapter extends WebSecurityConfigurerAdapter {
+        @Override
+        protected void configure(HttpSecurity http) throws Exception {
+            http.authorizeRequests()
                     .antMatchers("/").permitAll()
                     .antMatchers("/static/**").permitAll()
                     // roles should not have prefix ROLE_ because this prefix is added automatically
                     .antMatchers("/users/current").hasAnyRole("REGISTERED_USER")
                     .antMatchers("/**").hasAnyRole("BOOKING_MANAGER")
-                .and().formLogin().loginPage("/login").permitAll()
-                .and().exceptionHandling().accessDeniedPage("/accessDenied")
-                .and().logout().permitAll()
-                .and().rememberMe();
+                    .and().formLogin().loginPage("/login").permitAll()
+                    .and().exceptionHandling().accessDeniedPage("/accessDenied")
+                    .and().logout().permitAll()
+                    .and().csrf()
+                    .and().rememberMe();
+        }
+
+        @Override
+        public void configure(WebSecurity web) {
+            web.ignoring().antMatchers("/api/**", "/h2-console/**");
+        }
     }
 
-    private void configureForREST(HttpSecurity http) throws Exception {
-        http.authorizeRequests()
-                .antMatchers(HttpMethod.GET, "/api/**").hasAnyRole("REST_USER")
-                .antMatchers(HttpMethod.POST, "/api/**").hasAnyRole("REST_USER")
-                .antMatchers(HttpMethod.PUT, "/api/**").hasAnyRole("REST_USER")
-                .antMatchers(HttpMethod.PATCH, "/api/**").hasAnyRole("REST_USER")
-            .and().httpBasic()
-            .and().csrf().ignoringAntMatchers("/api/**");
-    }
-
-    // add these lines to use H2 web console
-    private void allowAnonymousAccessToH2WebConsole(HttpSecurity http) throws Exception {
-        http.authorizeRequests()
-                .antMatchers("/h2-console/**").anonymous()
-                .and().csrf().ignoringAntMatchers("/h2-console/**");
-        http.headers().frameOptions().sameOrigin();
-    }
-
-    @Override
-    public void configure(WebSecurity web) {
+    @Configuration
+    @Order(2)
+    @Profile(value = {"dev", "default"})
+    public static class ApiWebSecurityConfigurationAdapter extends WebSecurityConfigurerAdapter {
+        @Override
+        protected void configure(HttpSecurity http) throws Exception {
+            http.authorizeRequests()
+                    .antMatchers( "/api/**").hasAnyRole("REST_USER")
+                    .and().httpBasic();
+        }
     }
 
     public UserDetailsService getUserDetailsService() {
